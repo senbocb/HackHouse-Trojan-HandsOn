@@ -1,0 +1,1 @@
+This is a self-contained, client-side-only simulator that mimics the appearance of phishing/trojan flows for training purposes, then breaks the fourth wall to teach the lesson. Nothing in it collects, stores, or transmits real data, and nothing in it would function as malware if someone ran it.
