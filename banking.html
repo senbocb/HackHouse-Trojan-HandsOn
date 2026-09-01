@@ -54,33 +54,19 @@
       <h2>Your Info Was Just Stolen</h2>
       <p class="reveal-sub">This was a Trojan phishing page. Here's what happened:</p>
 
-      <div class="reveal-data" id="reveal-data">
-        <!-- Filled by JS -->
+      <div class="reveal-section">
+        <div class="reveal-section-title">What it did</div>
+        <div class="reveal-data" id="reveal-data"></div>
       </div>
 
-      <div class="reveal-steps">
-        <div class="reveal-step">
-          <span class="step-num">1</span>
-          <span>You entered your real credentials on a fake site</span>
-        </div>
-        <div class="reveal-step">
-          <span class="step-num">2</span>
-          <span>The form captured everything you typed</span>
-        </div>
-        <div class="reveal-step">
-          <span class="step-num">3</span>
-          <span>In a real attack, this data goes to the attacker instantly</span>
-        </div>
-        <div class="reveal-step">
-          <span class="step-num">4</span>
-          <span>You'd be redirected to the real bank — never knowing</span>
-        </div>
+      <div class="reveal-section">
+        <div class="reveal-section-title">Flags you missed</div>
+        <div class="reveal-data" id="reveal-flags"></div>
       </div>
 
       <div class="reveal-tip">
-        <strong>How to spot it:</strong> Always check the URL. Phishing sites use lookalike domains
-        (securebänk.com, secure-bank-login.com). Never click login links from emails — type the
-        URL yourself.
+        <strong>How to spot it:</strong> Always check the URL — phishing sites use lookalike domains.
+        Never click login links from emails. Type the URL yourself.
       </div>
 
       <a href="index.html" class="reveal-back">← Back to demos</a>
@@ -88,7 +74,13 @@
   </div>
 
   <script>
-    // CAPTURE FORM — no network call, just shows what was captured
+    var redFlags = [
+      'Domain wasn\'t your bank\'s real URL',
+      'You arrived from an email link, not typed the address',
+      'No padlock or "Not Secure" warning in the address bar',
+      'Generic "Sign In" page with no personal branding'
+    ];
+
     document.getElementById('bank-form').addEventListener('submit', function(e) {
       e.preventDefault();
 
@@ -96,17 +88,23 @@
       var pass = document.getElementById('bank-pass').value || '(empty)';
       var acct = document.getElementById('bank-account').value || '(empty)';
 
-      // Show reveal
       document.getElementById('bank-ui').style.display = 'none';
       var reveal = document.getElementById('reveal');
       reveal.style.display = 'flex';
 
+      // What it did
       document.getElementById('reveal-data').innerHTML =
         '<div class="data-row"><span class="data-label">Username:</span><span class="data-val">' + esc(user) + '</span></div>' +
         '<div class="data-row"><span class="data-label">Password:</span><span class="data-val">' + esc(pass) + '</span></div>' +
         '<div class="data-row"><span class="data-label">Account #:</span><span class="data-val">' + esc(acct) + '</span></div>' +
-        '<div class="data-row"><span class="data-label">Timestamp:</span><span class="data-val">' + new Date().toLocaleString() + '</span></div>' +
-        '<div class="data-row"><span class="data-label">Status:</span><span class="data-val" style="color:var(--red)">Captured locally (never sent)</span></div>';
+        '<div class="data-row"><span class="data-label">Status:</span><span class="data-val" style="color:var(--red)">Captured — attacker has it all</span></div>';
+
+      // Flags you missed
+      var flagsHtml = '';
+      redFlags.forEach(function(f) {
+        flagsHtml += '<div class="reveal-flag">• ' + f + '</div>';
+      });
+      document.getElementById('reveal-flags').innerHTML = flagsHtml;
     });
 
     function esc(s) {

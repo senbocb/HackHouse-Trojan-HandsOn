@@ -88,35 +88,22 @@
     <div class="reveal-card">
       <div class="reveal-icon">⚠️</div>
       <h2>This Was a Trojan</h2>
-      <p class="reveal-sub">The "download" was never real software. Here's what it actually did:</p>
+      <p class="reveal-sub">The "download" was never real software. Here's what happened:</p>
 
-      <div class="reveal-steps">
-        <div class="reveal-step">
-          <span class="step-num">1</span>
-          <span>Fake reviews and download counts made it look trustworthy</span>
-        </div>
-        <div class="reveal-step">
-          <span class="step-num">2</span>
-          <span>The "installer" ran hidden scripts in the background</span>
-        </div>
-        <div class="reveal-step">
-          <span class="step-num">3</span>
-          <span>It installed a keylogger, credential stealer, and backdoor</span>
-        </div>
-        <div class="reveal-step">
-          <span class="step-num">4</span>
-          <span>Your data would be sent to the attacker's server</span>
-        </div>
+      <div class="reveal-section">
+        <div class="reveal-section-title">What it did</div>
+        <div class="reveal-steps" id="reveal-steps"></div>
       </div>
 
-      <div class="reveal-data" id="reveal-log">
-        <!-- Filled by JS -->
+      <div class="reveal-section">
+        <div class="reveal-section-title">Flags you missed</div>
+        <div class="reveal-data" id="reveal-flags"></div>
       </div>
 
       <div class="reveal-tip">
         <strong>How to spot it:</strong> Be skeptical of "free" versions of paid software.
-        Check the actual domain — is it the official site? Search for the software name +
-        "scam" before downloading. Use official download sources only.
+        Check if the domain is the official site. Search the software name + "scam" before
+        downloading. Use official sources only.
       </div>
 
       <a href="index.html" class="reveal-back">← Back to demos</a>
@@ -128,6 +115,13 @@
     var installEl = document.getElementById('install-log');
     var fillEl = document.getElementById('install-fill');
     var statusEl = document.getElementById('install-status');
+
+    var redFlags = [
+      '"Free" version of paid software — too good to be true',
+      'Site had no real company info or contact details',
+      'Generic 5-star reviews with no detail',
+      'Download button on a third-party site, not the official one'
+    ];
 
     document.getElementById('btn-download').addEventListener('click', function() {
       document.getElementById('dl-ui').style.display = 'none';
@@ -145,17 +139,15 @@
 
     function runInstaller() {
       var steps = [
-        { pct: 10, status: 'Downloading...', log: '▶ Downloading PhotoEdit_Pro_v4.2.1.exe (48.3 MB)', cls: '' },
-        { pct: 25, status: 'Verifying...', log: '▶ Verifying file hash... OK', cls: '' },
-        { pct: 35, status: 'Extracting...', log: '▶ Extracting files to C:\\Program Files\\PhotoEdit\\', cls: '' },
-        { pct: 45, status: 'Installing...', log: '▶ Installing components...', cls: '' },
+        { pct: 15, status: 'Downloading...', log: '▶ Downloading PhotoEdit_Pro_v4.2.1.exe', cls: '' },
+        { pct: 30, status: 'Verifying...', log: '▶ Verifying file hash... OK', cls: '' },
+        { pct: 45, status: 'Extracting...', log: '▶ Extracting files...', cls: '' },
         { pct: 55, status: 'Installing...', log: '⚠ Running post-install script...', cls: 'warn' },
-        { pct: 65, status: 'Installing...', log: '▶ Installing keylogger driver... DONE', cls: 'danger' },
-        { pct: 72, status: 'Installing...', log: '▶ Copying browser password extractor... DONE', cls: 'danger' },
-        { pct: 80, status: 'Installing...', log: '▶ Opening reverse shell on port 4444... DONE', cls: 'danger' },
-        { pct: 88, status: 'Installing...', log: '▶ Registering persistence in startup...', cls: 'danger' },
-        { pct: 95, status: 'Finalizing...', log: '▶ All payloads active. User sees "Install Complete."', cls: 'warn' },
-        { pct: 100, status: 'Done!', log: '✓ Installation complete! (It wasn\'t.)', cls: '' }
+        { pct: 65, status: 'Installing...', log: '▶ Keylogger installed', cls: 'danger' },
+        { pct: 75, status: 'Installing...', log: '▶ Password stealer installed', cls: 'danger' },
+        { pct: 85, status: 'Installing...', log: '▶ Backdoor opened on port 4444', cls: 'danger' },
+        { pct: 95, status: 'Finalizing...', log: '▶ All payloads active', cls: 'warn' },
+        { pct: 100, status: 'Done!', log: '✓ Install complete! (It wasn\'t.)', cls: '' }
       ];
 
       steps.forEach(function(s, i) {
@@ -167,7 +159,7 @@
           if (i === steps.length - 1) {
             setTimeout(showReveal, 800);
           }
-        }, i * 600);
+        }, i * 550);
       });
     }
 
@@ -176,11 +168,25 @@
       var reveal = document.getElementById('reveal');
       reveal.style.display = 'flex';
 
-      var logHtml = '<div class="data-label">Installation log (what actually happened):</div>';
-      logLines.forEach(function(l) {
-        logHtml += '<div class="install-log-line ' + l.cls + '">' + esc(l.text) + '</div>';
+      // What it did
+      var stepsHtml = '';
+      var whatItDid = [
+        'Fake reviews and download counts built false trust',
+        'The "installer" ran hidden malicious scripts',
+        'Installed a keylogger, credential stealer, and backdoor',
+        'Your data would be sent to the attacker\'s server'
+      ];
+      whatItDid.forEach(function(s, i) {
+        stepsHtml += '<div class="reveal-step"><span class="step-num">' + (i + 1) + '</span><span>' + s + '</span></div>';
       });
-      document.getElementById('reveal-log').innerHTML = logHtml;
+      document.getElementById('reveal-steps').innerHTML = stepsHtml;
+
+      // Flags you missed
+      var flagsHtml = '';
+      redFlags.forEach(function(f) {
+        flagsHtml += '<div class="reveal-flag">• ' + f + '</div>';
+      });
+      document.getElementById('reveal-flags').innerHTML = flagsHtml;
     }
 
     function esc(s) {

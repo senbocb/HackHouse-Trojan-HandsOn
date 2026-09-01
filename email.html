@@ -50,20 +50,21 @@
     <div class="reveal-card">
       <div class="reveal-icon">⚠️</div>
       <h2>That Email Was a Trojan</h2>
-      <p class="reveal-sub">The attachment was malicious. Here's what it actually did:</p>
+      <p class="reveal-sub">The attachment was malicious. Here's what happened:</p>
 
-      <div class="reveal-steps" id="reveal-steps">
-        <!-- Filled by JS -->
+      <div class="reveal-section">
+        <div class="reveal-section-title">What it did</div>
+        <div class="reveal-steps" id="reveal-steps"></div>
       </div>
 
-      <div class="reveal-data" id="reveal-log">
-        <!-- Filled by JS -->
+      <div class="reveal-section">
+        <div class="reveal-section-title">Flags you missed</div>
+        <div class="reveal-data" id="reveal-flags"></div>
       </div>
 
       <div class="reveal-tip">
-        <strong>How to spot it:</strong> Look for misspellings in the sender's name and body.
-        Check the sender's actual email address — hover or long-press. Be suspicious of urgency
-        ("ASAP", "urgent", "immediately"). Never open attachments you weren't expecting.
+        <strong>How to spot it:</strong> Check the sender's actual email address — hover or long-press.
+        Look for misspellings and urgency ("ASAP", "urgent"). Never open unexpected attachments.
         When in doubt, contact the person directly through a known channel.
       </div>
 
@@ -220,36 +221,26 @@
       var reveal = document.getElementById('reveal');
       reveal.style.display = 'flex';
 
-      // Build red flags list
-      var flagsHtml = '<div class="data-label">🚩 Red flags you should have noticed:</div>';
+      // What it did — short and sweet
+      var stepsHtml = '';
+      var whatItDid = [
+        'Ran hidden macros after you clicked "Enable"',
+        'Installed a keylogger to capture keystrokes',
+        'Stole saved browser passwords',
+        'Opened a backdoor to the attacker\'s server',
+        'Document looked normal — you\'d never know'
+      ];
+      whatItDid.forEach(function(s, i) {
+        stepsHtml += '<div class="reveal-step"><span class="step-num">' + (i + 1) + '</span><span>' + s + '</span></div>';
+      });
+      document.getElementById('reveal-steps').innerHTML = stepsHtml;
+
+      // Flags you missed — short
+      var flagsHtml = '';
       redFlags.forEach(function(f) {
         flagsHtml += '<div class="reveal-flag">• ' + f + '</div>';
       });
-      document.getElementById('reveal-steps').innerHTML = flagsHtml;
-
-      // Build attack log
-      var logHtml = '<div class="data-label">What the attachment did:</div>';
-      var steps = [
-        '▶ Opening "' + e.attachment.name + '"...',
-        '▶ Word asked to "Enable Macros" — you clicked Yes',
-        '▶ VBA macro executed: AutoOpen() triggered',
-        '▶ powershell.exe launched in background',
-        '▶ Downloading payload from evil-update.com...',
-        '▶ Saving to %TEMP%\\svchost.exe',
-        '▶ Executing payload...',
-        '▶ Keylogger driver installed',
-        '▶ Browser passwords extracted (Chrome, Firefox)',
-        '▶ Reverse shell opened to 45.33.99.112:4444',
-        '▶ All data packaged and exfiltrated',
-        '✓ You\'d never know — the document looked normal after'
-      ];
-      steps.forEach(function(s) {
-        var cls = '';
-        if (s.indexOf('powershell') > -1 || s.indexOf('Keylogger') > -1 || s.indexOf('passwords') > -1 || s.indexOf('Reverse') > -1 || s.indexOf('exfiltrated') > -1) cls = 'danger';
-        else if (s.indexOf('▶') > -1 && s.indexOf('Opening') === -1) cls = 'warn';
-        logHtml += '<div class="install-log-line ' + cls + '">' + s + '</div>';
-      });
-      document.getElementById('reveal-log').innerHTML = logHtml;
+      document.getElementById('reveal-flags').innerHTML = flagsHtml;
     }
 
     // ===== BACK BUTTON =====

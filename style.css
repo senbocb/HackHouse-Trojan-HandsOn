@@ -598,7 +598,7 @@ html, body {
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  padding: 20px;
+  padding: 16px;
   overflow-y: auto;
 }
 
@@ -606,7 +606,7 @@ html, body {
   background: var(--surface);
   border-radius: 16px;
   padding: 28px 24px;
-  max-width: 420px;
+  max-width: 480px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -963,9 +963,24 @@ html, body {
   background: #1d4ed8;
 }
 
+/* Reveal sections */
+.reveal-section {
+  margin-bottom: 16px;
+}
+
+.reveal-section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+  margin-bottom: 8px;
+}
+
 /* Reveal flags */
 .reveal-flag {
   font-size: 0.78rem;
+  font-family: var(--font);
   padding: 5px 0;
   border-bottom: 1px solid var(--surface-2);
   color: #e2e8f0;
@@ -974,4 +989,51 @@ html, body {
 
 .reveal-flag:last-child {
   border-bottom: none;
+}
+
+/* ==============================
+   LARGER SCREENS (laptop)
+   ============================== */
+@media (min-width: 768px) {
+  .landing-wrap h1 { font-size: 3rem; }
+  .demo-cards { max-width: 480px; gap: 16px; }
+  .demo-card { padding: 24px 28px; flex-direction: row; gap: 16px; }
+  .demo-icon { margin-bottom: 0; font-size: 2.2rem; }
+  .demo-title { font-size: 1.05rem; }
+  .demo-desc { text-align: left; }
+
+  .reveal-card {
+    max-width: 520px;
+    padding: 36px 32px;
+  }
+
+  .reveal-icon { font-size: 3.5rem; }
+  .reveal-card h2 { font-size: 1.6rem; }
+  .reveal-step { font-size: 0.9rem; }
+  .reveal-tip { font-size: 0.88rem; }
+
+  .bank-wrap { max-width: 480px; }
+  .dl-wrap { max-width: 580px; }
+  .installer-card { max-width: 440px; }
+}
+
+/* ==============================
+   SMALL SCREENS (phones)
+   ============================== */
+@media (max-width: 480px) {
+  .reveal-card {
+    padding: 22px 18px;
+    border-radius: 12px;
+  }
+
+  .reveal-icon { font-size: 2.5rem; }
+  .reveal-card h2 { font-size: 1.2rem; }
+  .reveal-step { font-size: 0.82rem; }
+  .reveal-data { font-size: 0.72rem; padding: 12px; }
+  .reveal-flag { font-size: 0.75rem; }
+  .reveal-tip { font-size: 0.8rem; padding: 12px; }
+
+  .bank-login-card { padding: 22px 18px; }
+  .dl-product { flex-direction: column; gap: 12px; }
+  .installer-card { padding: 18px; }
 }

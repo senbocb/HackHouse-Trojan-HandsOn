@@ -50,33 +50,20 @@
       <h2>Your Browser Just Got Hijacked</h2>
       <p class="reveal-sub">This innocent-looking site was infected with popup-based malware.</p>
 
-      <div class="reveal-steps">
-        <div class="reveal-step">
-          <span class="step-num">1</span>
-          <span>The site looked like a normal news article</span>
-        </div>
-        <div class="reveal-step">
-          <span class="step-num">2</span>
-          <span>Malicious scripts ran as soon as the page loaded</span>
-        </div>
-        <div class="reveal-step">
-          <span class="step-num">3</span>
-          <span>Popups tried to trick you into clicking "Allow" or "Download"</span>
-        </div>
-        <div class="reveal-step">
-          <span class="step-num">4</span>
-          <span>Each click would install adware, miners, or credential stealers</span>
-        </div>
+      <div class="reveal-section">
+        <div class="reveal-section-title">What it did</div>
+        <div class="reveal-steps" id="reveal-steps"></div>
       </div>
 
-      <div class="reveal-data" id="reveal-data">
-        <!-- Filled by JS -->
+      <div class="reveal-section">
+        <div class="reveal-section-title">Flags you missed</div>
+        <div class="reveal-data" id="reveal-data"></div>
       </div>
 
       <div class="reveal-tip">
-        <strong>How to spot it:</strong> If a site you don't trust suddenly shows popups asking
-        you to "Allow notifications," "Download Flash," or "Verify you're human" — close the tab.
-        Use an ad blocker. Never click "Allow" on notification prompts from unknown sites.
+        <strong>How to spot it:</strong> If a site shows popups asking you to "Allow notifications"
+        or "Download" something — close the tab. Use an ad blocker. Never click "Allow" on
+        notification prompts from unknown sites.
       </div>
 
       <a href="index.html" class="reveal-back">← Back to demos</a>
@@ -86,38 +73,46 @@
   <script>
     var popupData = [];
     var popupContainer = document.getElementById('popup-container');
+    var revealed = false;
+
+    var redFlags = [
+      'Popups appeared without you clicking anything',
+      'Urgent language: "Virus!", "Suspended!", "Congratulations!"',
+      'Buttons like "Clean Now", "Verify Now" lead to malware',
+      'Multiple popups stacking — classic browser hijack behavior'
+    ];
 
     var popups = [
       {
-        delay: 2000,
+        delay: 1500,
         title: '⚠️ Virus Detected!',
         body: 'Your device has 5 viruses! Tap "Clean Now" to remove them immediately.',
         btn: 'Clean Now',
         cls: 'popup-danger'
       },
       {
-        delay: 4000,
+        delay: 3000,
         title: '🚨 System Warning',
         body: 'Your storage is 94% full. Tap "Fix" to free up space and protect your data.',
         btn: 'Fix Now',
         cls: 'popup-warning'
       },
       {
-        delay: 6500,
+        delay: 4500,
         title: '🎰 Congratulations!',
         body: 'You\'ve been selected! Tap to claim your free iPhone 15 Pro before time runs out.',
         btn: 'Claim Prize',
         cls: 'popup-prize'
       },
       {
-        delay: 9000,
+        delay: 6000,
         title: '🔒 Account Suspended',
         body: 'Your account has been locked due to suspicious activity. Tap to verify your identity.',
         btn: 'Verify Now',
         cls: 'popup-phish'
       },
       {
-        delay: 11500,
+        delay: 7500,
         title: '⚙️ Update Required',
         body: 'A critical security update is available. Tap to install the latest patch.',
         btn: 'Update Now',
@@ -140,34 +135,31 @@
         '<button class="popup-btn">' + p.btn + '</button>' +
         '<button class="popup-close">✕</button>';
 
-      // Position randomly but visible
       div.style.top = (20 + Math.random() * 40) + '%';
       div.style.left = (10 + Math.random() * 50) + '%';
 
-      // Close button
       div.querySelector('.popup-close').addEventListener('click', function(e) {
         e.stopPropagation();
         div.remove();
         popupData.push({ title: p.title, action: 'Closed (good!)' });
       });
 
-      // Fake action button
       div.querySelector('.popup-btn').addEventListener('click', function(e) {
         e.stopPropagation();
-        popupData.push({ title: p.title, action: p.btn + ' clicked (would install malware!)' });
+        popupData.push({ title: p.title, action: p.btn + ' clicked' });
         div.classList.add('clicked');
-        div.querySelector('.popup-body').textContent = 'In a real attack, this would install malware on your device.';
+        div.querySelector('.popup-body').textContent = 'Malware would install here — demo blocked.';
         div.querySelector('.popup-btn').style.display = 'none';
-        div.querySelector('.popup-title').textContent = '❌ Malicious action blocked (demo)';
+        div.querySelector('.popup-title').textContent = '❌ Blocked (demo)';
         div.querySelector('.popup-title').style.color = 'var(--red)';
+
+        if (!revealed) {
+          revealed = true;
+          setTimeout(showReveal, 600);
+        }
       });
 
       popupContainer.appendChild(div);
-
-      // Show reveal after last popup
-      if (index === popups.length - 1) {
-        setTimeout(showReveal, 4000);
-      }
     }
 
     function showReveal() {
@@ -176,16 +168,30 @@
       var reveal = document.getElementById('reveal');
       reveal.style.display = 'flex';
 
-      var html = '<div class="data-label">Popup activity log:</div>';
-      if (popupData.length === 0) {
-        html += '<div class="data-row"><span class="data-val">You closed all popups — well done!</span></div>';
-      } else {
+      // What it did
+      var stepsHtml = '';
+      var whatItDid = [
+        'Malicious scripts ran as soon as the page loaded',
+        'Popups tried to trick you into clicking dangerous buttons',
+        'One click would install adware, miners, or stealers',
+        'The site looked normal — the danger was hidden'
+      ];
+      whatItDid.forEach(function(s, i) {
+        stepsHtml += '<div class="reveal-step"><span class="step-num">' + (i + 1) + '</span><span>' + s + '</span></div>';
+      });
+      document.getElementById('reveal-steps').innerHTML = stepsHtml;
+
+      // Flags you missed
+      var flagsHtml = '';
+      redFlags.forEach(function(f) {
+        flagsHtml += '<div class="reveal-flag">• ' + f + '</div>';
+      });
+      if (popupData.length > 0) {
         popupData.forEach(function(d) {
-          html += '<div class="data-row"><span class="data-label">' + esc(d.title) + ':</span><span class="data-val">' + esc(d.action) + '</span></div>';
+          flagsHtml += '<div class="reveal-flag">• You clicked: ' + esc(d.title) + '</div>';
         });
       }
-      html += '<div class="data-row"><span class="data-label">Total popups shown:</span><span class="data-val">' + popups.length + '</span></div>';
-      document.getElementById('reveal-data').innerHTML = html;
+      document.getElementById('reveal-data').innerHTML = flagsHtml;
     }
 
     function esc(s) {
