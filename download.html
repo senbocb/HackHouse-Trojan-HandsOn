@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhotoEdit Pro — Free Download</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="download-page">
+
+  <div class="disclaimer-bar">
+    ⚠ This is a FAKE download site for educational purposes. The "software" is not real. Nothing is installed.
+  </div>
+
+  <!-- FAKE DOWNLOAD SITE -->
+  <div class="dl-wrap" id="dl-ui">
+    <div class="dl-header">
+      <div class="dl-logo">SoftWorld<span>.io</span></div>
+      <div class="dl-nav">
+        <span>Home</span>
+        <span>Software</span>
+        <span>Categories</span>
+      </div>
+    </div>
+
+    <div class="dl-product">
+      <div class="dl-product-icon">🖼️</div>
+      <div class="dl-product-info">
+        <h1>PhotoEdit Pro <span class="dl-version">v4.2.1</span></h1>
+        <div class="dl-meta">
+          <span>⭐ 4.8 (12,340 reviews)</span>
+          <span>⬇️ 2.1M downloads</span>
+          <span>✅ Verified</span>
+        </div>
+        <p class="dl-desc">
+          Professional photo editing made simple. AI-powered tools, filters, batch processing,
+          and one-click enhancements. The free version includes all core features.
+        </p>
+        <div class="dl-specs">
+          <span>Size: 48.3 MB</span>
+          <span>Version: 4.2.1</span>
+          <span>OS: Windows 10/11</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dl-reviews">
+      <h3>User Reviews</h3>
+      <div class="review">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Best free photo editor I've found! Works perfectly."</div>
+        <div class="review-author">— Sarah M., 2 days ago</div>
+      </div>
+      <div class="review">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">"Switched from Photoshop. Does everything I need."</div>
+        <div class="review-author">— Mike T., 1 week ago</div>
+      </div>
+      <div class="review">
+        <div class="review-stars">★★★★☆</div>
+        <div class="review-text">"Great tool, fast download. Highly recommend."</div>
+        <div class="review-author">— Alex K., 3 days ago</div>
+      </div>
+    </div>
+
+    <div class="dl-cta">
+      <button class="dl-download-btn" id="btn-download">⬇ Download PhotoEdit Pro (Free)</button>
+      <p class="dl-notice">✓ No installers ✓ No bundleware ✓ Direct download</p>
+    </div>
+
+    <div class="dl-footer">© 2024 SoftWorld.io — Trusted Software Downloads</div>
+  </div>
+
+  <!-- FAKE INSTALLER -->
+  <div class="installer" id="installer" style="display:none">
+    <div class="installer-card">
+      <div class="installer-title">📦 PhotoEdit Pro Setup</div>
+      <div class="installer-progress">
+        <div class="installer-bar"><div class="installer-fill" id="install-fill"></div></div>
+        <div class="installer-status" id="install-status">Preparing installation...</div>
+      </div>
+      <div class="installer-log" id="install-log"></div>
+    </div>
+  </div>
+
+  <!-- REVEAL -->
+  <div class="reveal-overlay" id="reveal" style="display:none">
+    <div class="reveal-card">
+      <div class="reveal-icon">⚠️</div>
+      <h2>This Was a Trojan</h2>
+      <p class="reveal-sub">The "download" was never real software. Here's what it actually did:</p>
+
+      <div class="reveal-steps">
+        <div class="reveal-step">
+          <span class="step-num">1</span>
+          <span>Fake reviews and download counts made it look trustworthy</span>
+        </div>
+        <div class="reveal-step">
+          <span class="step-num">2</span>
+          <span>The "installer" ran hidden scripts in the background</span>
+        </div>
+        <div class="reveal-step">
+          <span class="step-num">3</span>
+          <span>It installed a keylogger, credential stealer, and backdoor</span>
+        </div>
+        <div class="reveal-step">
+          <span class="step-num">4</span>
+          <span>Your data would be sent to the attacker's server</span>
+        </div>
+      </div>
+
+      <div class="reveal-data" id="reveal-log">
+        <!-- Filled by JS -->
+      </div>
+
+      <div class="reveal-tip">
+        <strong>How to spot it:</strong> Be skeptical of "free" versions of paid software.
+        Check the actual domain — is it the official site? Search for the software name +
+        "scam" before downloading. Use official download sources only.
+      </div>
+
+      <a href="index.html" class="reveal-back">← Back to demos</a>
+    </div>
+  </div>
+
+  <script>
+    var logLines = [];
+    var installEl = document.getElementById('install-log');
+    var fillEl = document.getElementById('install-fill');
+    var statusEl = document.getElementById('install-status');
+
+    document.getElementById('btn-download').addEventListener('click', function() {
+      document.getElementById('dl-ui').style.display = 'none';
+      document.getElementById('installer').style.display = 'flex';
+      runInstaller();
+    });
+
+    function addLog(text, cls) {
+      var d = document.createElement('div');
+      d.className = 'install-log-line ' + (cls || '');
+      d.textContent = text;
+      installEl.appendChild(d);
+      logLines.push({ text: text, cls: cls || '' });
+    }
+
+    function runInstaller() {
+      var steps = [
+        { pct: 10, status: 'Downloading...', log: '▶ Downloading PhotoEdit_Pro_v4.2.1.exe (48.3 MB)', cls: '' },
+        { pct: 25, status: 'Verifying...', log: '▶ Verifying file hash... OK', cls: '' },
+        { pct: 35, status: 'Extracting...', log: '▶ Extracting files to C:\\Program Files\\PhotoEdit\\', cls: '' },
+        { pct: 45, status: 'Installing...', log: '▶ Installing components...', cls: '' },
+        { pct: 55, status: 'Installing...', log: '⚠ Running post-install script...', cls: 'warn' },
+        { pct: 65, status: 'Installing...', log: '▶ Installing keylogger driver... DONE', cls: 'danger' },
+        { pct: 72, status: 'Installing...', log: '▶ Copying browser password extractor... DONE', cls: 'danger' },
+        { pct: 80, status: 'Installing...', log: '▶ Opening reverse shell on port 4444... DONE', cls: 'danger' },
+        { pct: 88, status: 'Installing...', log: '▶ Registering persistence in startup...', cls: 'danger' },
+        { pct: 95, status: 'Finalizing...', log: '▶ All payloads active. User sees "Install Complete."', cls: 'warn' },
+        { pct: 100, status: 'Done!', log: '✓ Installation complete! (It wasn\'t.)', cls: '' }
+      ];
+
+      steps.forEach(function(s, i) {
+        setTimeout(function() {
+          fillEl.style.width = s.pct + '%';
+          statusEl.textContent = s.status;
+          addLog(s.log, s.cls);
+
+          if (i === steps.length - 1) {
+            setTimeout(showReveal, 800);
+          }
+        }, i * 600);
+      });
+    }
+
+    function showReveal() {
+      document.getElementById('installer').style.display = 'none';
+      var reveal = document.getElementById('reveal');
+      reveal.style.display = 'flex';
+
+      var logHtml = '<div class="data-label">Installation log (what actually happened):</div>';
+      logLines.forEach(function(l) {
+        logHtml += '<div class="install-log-line ' + l.cls + '">' + esc(l.text) + '</div>';
+      });
+      document.getElementById('reveal-log').innerHTML = logHtml;
+    }
+
+    function esc(s) {
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+  </script>
+
+</body>
+</html>

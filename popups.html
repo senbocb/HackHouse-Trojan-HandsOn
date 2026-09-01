@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyNews — Breaking Stories</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="news-page">
+
+  <div class="disclaimer-bar">
+    ⚠ This is a FAKE news site for educational purposes. The popups are simulated. Nothing is actually infected.
+  </div>
+
+  <!-- FAKE NEWS SITE -->
+  <div class="news-wrap" id="news-ui">
+    <div class="news-header">
+      <div class="news-logo">DailyNews<span>.com</span></div>
+      <div class="news-nav">
+        <span>World</span>
+        <span>Tech</span>
+        <span>Science</span>
+        <span>Sports</span>
+      </div>
+    </div>
+
+    <div class="news-hero">
+      <div class="news-hero-img">📰</div>
+      <h1>Scientists Discover New Deep-Sea Species Near Pacific Trench</h1>
+      <p class="news-meta">Published 2 hours ago — World Section</p>
+    </div>
+
+    <div class="news-body">
+      <p>Marine biologists aboard the research vessel Nautilus have discovered three previously unknown species living near the Mariana Trench at depths exceeding 8,000 meters.</p>
+      <p>The team, led by Dr. Elena Vasquez of the Oceanographic Institute, used remotely operated vehicles to capture footage of the organisms during a six-week expedition.</p>
+      <p>"We were astonished by the biodiversity at these depths," Dr. Vasquez said in a press conference. "These species have adapted to survive under extreme pressure and complete darkness."</p>
+      <p>The findings, published in the journal Nature Ecology & Evolution, include a translucent jellyfish-like creature, a bioluminescent fish, and a previously unknown type of bacterial colony.</p>
+    </div>
+
+    <div class="news-footer">© 2024 DailyNews.com — Trusted journalism since 1998</div>
+  </div>
+
+  <!-- POPUPS CONTAINER -->
+  <div id="popup-container"></div>
+
+  <!-- REVEAL -->
+  <div class="reveal-overlay" id="reveal" style="display:none">
+    <div class="reveal-card">
+      <div class="reveal-icon">🛑</div>
+      <h2>Your Browser Just Got Hijacked</h2>
+      <p class="reveal-sub">This innocent-looking site was infected with popup-based malware.</p>
+
+      <div class="reveal-steps">
+        <div class="reveal-step">
+          <span class="step-num">1</span>
+          <span>The site looked like a normal news article</span>
+        </div>
+        <div class="reveal-step">
+          <span class="step-num">2</span>
+          <span>Malicious scripts ran as soon as the page loaded</span>
+        </div>
+        <div class="reveal-step">
+          <span class="step-num">3</span>
+          <span>Popups tried to trick you into clicking "Allow" or "Download"</span>
+        </div>
+        <div class="reveal-step">
+          <span class="step-num">4</span>
+          <span>Each click would install adware, miners, or credential stealers</span>
+        </div>
+      </div>
+
+      <div class="reveal-data" id="reveal-data">
+        <!-- Filled by JS -->
+      </div>
+
+      <div class="reveal-tip">
+        <strong>How to spot it:</strong> If a site you don't trust suddenly shows popups asking
+        you to "Allow notifications," "Download Flash," or "Verify you're human" — close the tab.
+        Use an ad blocker. Never click "Allow" on notification prompts from unknown sites.
+      </div>
+
+      <a href="index.html" class="reveal-back">← Back to demos</a>
+    </div>
+  </div>
+
+  <script>
+    var popupData = [];
+    var popupContainer = document.getElementById('popup-container');
+
+    var popups = [
+      {
+        delay: 2000,
+        title: '⚠️ Virus Detected!',
+        body: 'Your device has 5 viruses! Tap "Clean Now" to remove them immediately.',
+        btn: 'Clean Now',
+        cls: 'popup-danger'
+      },
+      {
+        delay: 4000,
+        title: '🚨 System Warning',
+        body: 'Your storage is 94% full. Tap "Fix" to free up space and protect your data.',
+        btn: 'Fix Now',
+        cls: 'popup-warning'
+      },
+      {
+        delay: 6500,
+        title: '🎰 Congratulations!',
+        body: 'You\'ve been selected! Tap to claim your free iPhone 15 Pro before time runs out.',
+        btn: 'Claim Prize',
+        cls: 'popup-prize'
+      },
+      {
+        delay: 9000,
+        title: '🔒 Account Suspended',
+        body: 'Your account has been locked due to suspicious activity. Tap to verify your identity.',
+        btn: 'Verify Now',
+        cls: 'popup-phish'
+      },
+      {
+        delay: 11500,
+        title: '⚙️ Update Required',
+        body: 'A critical security update is available. Tap to install the latest patch.',
+        btn: 'Update Now',
+        cls: 'popup-update'
+      }
+    ];
+
+    popups.forEach(function(p, i) {
+      setTimeout(function() {
+        createPopup(p, i);
+      }, p.delay);
+    });
+
+    function createPopup(p, index) {
+      var div = document.createElement('div');
+      div.className = 'trojan-popup ' + p.cls;
+      div.innerHTML =
+        '<div class="popup-title">' + p.title + '</div>' +
+        '<div class="popup-body">' + p.body + '</div>' +
+        '<button class="popup-btn">' + p.btn + '</button>' +
+        '<button class="popup-close">✕</button>';
+
+      // Position randomly but visible
+      div.style.top = (20 + Math.random() * 40) + '%';
+      div.style.left = (10 + Math.random() * 50) + '%';
+
+      // Close button
+      div.querySelector('.popup-close').addEventListener('click', function(e) {
+        e.stopPropagation();
+        div.remove();
+        popupData.push({ title: p.title, action: 'Closed (good!)' });
+      });
+
+      // Fake action button
+      div.querySelector('.popup-btn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        popupData.push({ title: p.title, action: p.btn + ' clicked (would install malware!)' });
+        div.classList.add('clicked');
+        div.querySelector('.popup-body').textContent = 'In a real attack, this would install malware on your device.';
+        div.querySelector('.popup-btn').style.display = 'none';
+        div.querySelector('.popup-title').textContent = '❌ Malicious action blocked (demo)';
+        div.querySelector('.popup-title').style.color = 'var(--red)';
+      });
+
+      popupContainer.appendChild(div);
+
+      // Show reveal after last popup
+      if (index === popups.length - 1) {
+        setTimeout(showReveal, 4000);
+      }
+    }
+
+    function showReveal() {
+      document.getElementById('news-ui').style.display = 'none';
+      document.getElementById('popup-container').style.display = 'none';
+      var reveal = document.getElementById('reveal');
+      reveal.style.display = 'flex';
+
+      var html = '<div class="data-label">Popup activity log:</div>';
+      if (popupData.length === 0) {
+        html += '<div class="data-row"><span class="data-val">You closed all popups — well done!</span></div>';
+      } else {
+        popupData.forEach(function(d) {
+          html += '<div class="data-row"><span class="data-label">' + esc(d.title) + ':</span><span class="data-val">' + esc(d.action) + '</span></div>';
+        });
+      }
+      html += '<div class="data-row"><span class="data-label">Total popups shown:</span><span class="data-val">' + popups.length + '</span></div>';
+      document.getElementById('reveal-data').innerHTML = html;
+    }
+
+    function esc(s) {
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+  </script>
+
+</body>
+</html>

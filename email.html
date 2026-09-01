@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MailBox — Inbox</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="email-page">
+
+  <div class="disclaimer-bar">
+    ⚠ This is a FAKE email client for educational purposes. No real emails. No attachments are real.
+  </div>
+
+  <!-- INBOX VIEW -->
+  <div class="email-inbox" id="inbox-view">
+    <div class="email-client-header">
+      <div class="email-client-logo">📧 MailBox</div>
+      <div class="email-client-nav">
+        <span class="email-compose">✏️ Compose</span>
+      </div>
+    </div>
+
+    <div class="email-tabs">
+      <span class="email-tab active">Inbox <span class="email-badge">4</span></span>
+      <span class="email-tab">Starred</span>
+      <span class="email-tab">Sent</span>
+      <span class="email-tab">Spam</span>
+    </div>
+
+    <div class="email-list" id="email-list">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- EMAIL CONTENT VIEW -->
+  <div class="email-content-view" id="content-view" style="display:none">
+    <div class="email-client-header">
+      <div class="email-back" id="btn-back">← Back</div>
+      <div class="email-client-logo">📧 MailBox</div>
+    </div>
+
+    <div class="email-content-card" id="email-content">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- REVEAL -->
+  <div class="reveal-overlay" id="reveal" style="display:none">
+    <div class="reveal-card">
+      <div class="reveal-icon">⚠️</div>
+      <h2>That Email Was a Trojan</h2>
+      <p class="reveal-sub">The attachment was malicious. Here's what it actually did:</p>
+
+      <div class="reveal-steps" id="reveal-steps">
+        <!-- Filled by JS -->
+      </div>
+
+      <div class="reveal-data" id="reveal-log">
+        <!-- Filled by JS -->
+      </div>
+
+      <div class="reveal-tip">
+        <strong>How to spot it:</strong> Look for misspellings in the sender's name and body.
+        Check the sender's actual email address — hover or long-press. Be suspicious of urgency
+        ("ASAP", "urgent", "immediately"). Never open attachments you weren't expecting.
+        When in doubt, contact the person directly through a known channel.
+      </div>
+
+      <a href="index.html" class="reveal-back">← Back to demos</a>
+    </div>
+  </div>
+
+  <script>
+    // ===== EMAIL DATA =====
+    var emails = [
+      {
+        id: 'phish',
+        from: 'Davic Renolds',
+        fromEmail: 'drenolds@acme-corp.net',
+        avatar: '👤',
+        subject: 'Urgent: Q3 Finanical Report — Aproval Needed ASAP',
+        preview: 'Hi, please find attached the Q3 report that needs your review and aproval by end of day...',
+        time: '10:42 AM',
+        unread: true,
+        body: 'Hi,<br><br>I hope your weel is going well. I wanted to folow up on the Q3 finanical report that needs your review and aproval.<br><br>Please find the atatched report. We need this submited to the board by end of day tomorrow, so your prompt atention would be very much appreicated.<br><br>Let me know if you have any questons.<br><br>Best reguards,<br><strong>Davic Renolds</strong><br>Senior Finanical Analyst<br>Acme Corp<br><br><em>P.S. — I\'m curently travling, so please handle this onlie.</em>',
+        attachment: { name: 'Q3_Financial_Report.docx', size: '247 KB' },
+        malicious: true
+      },
+      {
+        id: 'normal1',
+        from: 'Sarah Chen',
+        fromEmail: 'schen@teamwork.io',
+        avatar: '👩‍💻',
+        subject: 'Team lunch tomorrow at noon',
+        preview: 'Hey team! Just a reminder — we\'re doing team lunch tomorrow at that new Thai place...',
+        time: '9:15 AM',
+        unread: false,
+        body: 'Hey team!<br><br>Just a reminder — we\'re doing team lunch tomorrow at noon at the new Thai place on 5th. Let me know if you\'re coming so I can make a reservation.<br><br>See you there! 🍜',
+        attachment: null,
+        malicious: false
+      },
+      {
+        id: 'normal2',
+        from: 'GitHub',
+        fromEmail: 'noreply@github.com',
+        avatar: '🐙',
+        subject: '[repo] Pull request #247 merged',
+        preview: 'Pull request #247 "Fix auth token refresh" has been merged into main...',
+        time: 'Yesterday',
+        unread: false,
+        body: 'Pull request <strong>#247</strong> "Fix auth token refresh" has been merged into <code>main</code> by @devlead.<br><br>3 files changed, 42 insertions(+), 18 deletions(-)',
+        attachment: null,
+        malicious: false
+      },
+      {
+        id: 'normal3',
+        from: 'LinkedIn',
+        fromEmail: 'notifications@linkedin.com',
+        avatar: '💼',
+        subject: 'You have 5 new profile views',
+        preview: 'Your profile was viewed by 5 people this week. See who viewed your profile...',
+        time: 'Yesterday',
+        unread: false,
+        body: 'Your profile was viewed by 5 people this week including 2 recruiters and 3 engineers.',
+        attachment: null,
+        malicious: false
+      }
+    ];
+
+    var currentEmail = null;
+
+    // ===== RED FLAGS (subtle) =====
+    var redFlags = [
+      'Sender name "Davic Renolds" — close to "David Reynolds" but misspelled',
+      'Email domain "acme-corp.net" — not the official company domain',
+      'Subject has "Urgent" + "ASAP" — creating false pressure',
+      '"Finanical" — should be "Financial"',
+      '"Aproval" — should be "Approval"',
+      '"Folow up" — should be "Follow up"',
+      '"Atatched" — should be "Attached"',
+      '"Atonement" — should be "Attention"',
+      '"Reguards" — should be "Regards"',
+      '"Curently travling" — misspelled + isolation tactic ("I\'m traveling, handle online")',
+      'Attachment is a .docx — common vector for macro-based malware'
+    ];
+
+    // ===== RENDER INBOX =====
+    function renderInbox() {
+      var list = document.getElementById('email-list');
+      list.innerHTML = '';
+      emails.forEach(function(e) {
+        var div = document.createElement('div');
+        div.className = 'email-item' + (e.unread ? ' unread' : '');
+        div.innerHTML =
+          '<div class="email-avatar">' + e.avatar + '</div>' +
+          '<div class="email-item-body">' +
+            '<div class="email-item-top">' +
+              '<span class="email-from' + (e.unread ? ' bold' : '') + '">' + e.from + '</span>' +
+              '<span class="email-time">' + e.time + '</span>' +
+            '</div>' +
+            '<div class="email-subject' + (e.unread ? ' bold' : '') + '">' + e.subject + '</div>' +
+            '<div class="email-preview">' + e.preview + '</div>' +
+          '</div>';
+        if (e.unread) {
+          div.style.borderLeft = '3px solid var(--blue)';
+        }
+        div.addEventListener('click', function() { openEmail(e); });
+        list.appendChild(div);
+      });
+    }
+
+    // ===== OPEN EMAIL =====
+    function openEmail(e) {
+      currentEmail = e;
+      document.getElementById('inbox-view').style.display = 'none';
+      var view = document.getElementById('content-view');
+      view.style.display = 'block';
+
+      var attachHtml = '';
+      if (e.attachment) {
+        attachHtml =
+          '<div class="email-attachment" id="email-attach">' +
+            '<div class="attach-icon">📎</div>' +
+            '<div class="attach-info">' +
+              '<div class="attach-name">' + e.attachment.name + '</div>' +
+              '<div class="attach-size">' + e.attachment.size + '</div>' +
+            '</div>' +
+            '<div class="attach-action" id="btn-attach">Open</div>' +
+          '</div>';
+      }
+
+      document.getElementById('email-content').innerHTML =
+        '<div class="email-from-full">' +
+          '<div class="email-avatar-big">' + e.avatar + '</div>' +
+          '<div>' +
+            '<div class="email-from-name">' + e.from + '</div>' +
+            '<div class="email-from-addr">&lt;' + e.fromEmail + '&gt;</div>' +
+          '</div>' +
+          '<div class="email-date">' + e.time + '</div>' +
+        '</div>' +
+        '<div class="email-subject-full">' + e.subject + '</div>' +
+        '<div class="email-body-text">' + e.body + '</div>' +
+        attachHtml;
+
+      if (e.attachment) {
+        document.getElementById('btn-attach').addEventListener('click', function() {
+          if (e.malicious) {
+            showAttachmentReveal(e);
+          } else {
+            alert('This is a safe demo email. No real attachment.');
+          }
+        });
+      }
+    }
+
+    // ===== ATTACHMENT REVEAL =====
+    function showAttachmentReveal(e) {
+      document.getElementById('content-view').style.display = 'none';
+      var reveal = document.getElementById('reveal');
+      reveal.style.display = 'flex';
+
+      // Build red flags list
+      var flagsHtml = '<div class="data-label">🚩 Red flags you should have noticed:</div>';
+      redFlags.forEach(function(f) {
+        flagsHtml += '<div class="reveal-flag">• ' + f + '</div>';
+      });
+      document.getElementById('reveal-steps').innerHTML = flagsHtml;
+
+      // Build attack log
+      var logHtml = '<div class="data-label">What the attachment did:</div>';
+      var steps = [
+        '▶ Opening "' + e.attachment.name + '"...',
+        '▶ Word asked to "Enable Macros" — you clicked Yes',
+        '▶ VBA macro executed: AutoOpen() triggered',
+        '▶ powershell.exe launched in background',
+        '▶ Downloading payload from evil-update.com...',
+        '▶ Saving to %TEMP%\\svchost.exe',
+        '▶ Executing payload...',
+        '▶ Keylogger driver installed',
+        '▶ Browser passwords extracted (Chrome, Firefox)',
+        '▶ Reverse shell opened to 45.33.99.112:4444',
+        '▶ All data packaged and exfiltrated',
+        '✓ You\'d never know — the document looked normal after'
+      ];
+      steps.forEach(function(s) {
+        var cls = '';
+        if (s.indexOf('powershell') > -1 || s.indexOf('Keylogger') > -1 || s.indexOf('passwords') > -1 || s.indexOf('Reverse') > -1 || s.indexOf('exfiltrated') > -1) cls = 'danger';
+        else if (s.indexOf('▶') > -1 && s.indexOf('Opening') === -1) cls = 'warn';
+        logHtml += '<div class="install-log-line ' + cls + '">' + s + '</div>';
+      });
+      document.getElementById('reveal-log').innerHTML = logHtml;
+    }
+
+    // ===== BACK BUTTON =====
+    document.getElementById('btn-back').addEventListener('click', function() {
+      document.getElementById('content-view').style.display = 'none';
+      document.getElementById('inbox-view').style.display = 'block';
+    });
+
+    // ===== INIT =====
+    renderInbox();
+  </script>
+
+</body>
+</html>

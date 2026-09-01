@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureBank — Online Banking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="banking-page">
+
+  <div class="disclaimer-bar">
+    ⚠ This is a FAKE banking site for educational purposes. No real bank. Your data stays on this page.
+  </div>
+
+  <!-- FAKE BANKING UI -->
+  <div class="bank-wrap" id="bank-ui">
+    <div class="bank-header">
+      <div class="bank-logo">🏦 SecureBank</div>
+      <div class="bank-nav">
+        <span>Personal</span>
+        <span>Business</span>
+        <span>Support</span>
+      </div>
+    </div>
+
+    <div class="bank-login-card">
+      <h2>Online Banking Login</h2>
+      <p class="bank-sub">Sign in to access your account</p>
+      <form id="bank-form" autocomplete="off">
+        <label>Username or Email
+          <input type="text" id="bank-user" placeholder="e.g. john@example.com" autocomplete="off">
+        </label>
+        <label>Password
+          <input type="password" id="bank-pass" placeholder="Enter your password" autocomplete="off">
+        </label>
+        <label>Account Number (optional)
+          <input type="text" id="bank-account" placeholder="e.g. 1234-5678-9012" autocomplete="off">
+        </label>
+        <button type="submit" class="bank-btn">Sign In</button>
+      </form>
+      <div class="bank-footer-links">
+        <span>Forgot password?</span>
+        <span>Create account</span>
+      </div>
+    </div>
+
+    <div class="bank-real-footer">© 2024 SecureBank — FDIC Insured — Equal Housing Lender</div>
+  </div>
+
+  <!-- REVEAL: WHAT ACTUALLY HAPPENED -->
+  <div class="reveal-overlay" id="reveal" style="display:none">
+    <div class="reveal-card">
+      <div class="reveal-icon">🔓</div>
+      <h2>Your Info Was Just Stolen</h2>
+      <p class="reveal-sub">This was a Trojan phishing page. Here's what happened:</p>
+
+      <div class="reveal-data" id="reveal-data">
+        <!-- Filled by JS -->
+      </div>
+
+      <div class="reveal-steps">
+        <div class="reveal-step">
+          <span class="step-num">1</span>
+          <span>You entered your real credentials on a fake site</span>
+        </div>
+        <div class="reveal-step">
+          <span class="step-num">2</span>
+          <span>The form captured everything you typed</span>
+        </div>
+        <div class="reveal-step">
+          <span class="step-num">3</span>
+          <span>In a real attack, this data goes to the attacker instantly</span>
+        </div>
+        <div class="reveal-step">
+          <span class="step-num">4</span>
+          <span>You'd be redirected to the real bank — never knowing</span>
+        </div>
+      </div>
+
+      <div class="reveal-tip">
+        <strong>How to spot it:</strong> Always check the URL. Phishing sites use lookalike domains
+        (securebänk.com, secure-bank-login.com). Never click login links from emails — type the
+        URL yourself.
+      </div>
+
+      <a href="index.html" class="reveal-back">← Back to demos</a>
+    </div>
+  </div>
+
+  <script>
+    // CAPTURE FORM — no network call, just shows what was captured
+    document.getElementById('bank-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var user = document.getElementById('bank-user').value || '(empty)';
+      var pass = document.getElementById('bank-pass').value || '(empty)';
+      var acct = document.getElementById('bank-account').value || '(empty)';
+
+      // Show reveal
+      document.getElementById('bank-ui').style.display = 'none';
+      var reveal = document.getElementById('reveal');
+      reveal.style.display = 'flex';
+
+      document.getElementById('reveal-data').innerHTML =
+        '<div class="data-row"><span class="data-label">Username:</span><span class="data-val">' + esc(user) + '</span></div>' +
+        '<div class="data-row"><span class="data-label">Password:</span><span class="data-val">' + esc(pass) + '</span></div>' +
+        '<div class="data-row"><span class="data-label">Account #:</span><span class="data-val">' + esc(acct) + '</span></div>' +
+        '<div class="data-row"><span class="data-label">Timestamp:</span><span class="data-val">' + new Date().toLocaleString() + '</span></div>' +
+        '<div class="data-row"><span class="data-label">Status:</span><span class="data-val" style="color:var(--red)">Captured locally (never sent)</span></div>';
+    });
+
+    function esc(s) {
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+  </script>
+
+</body>
+</html>
