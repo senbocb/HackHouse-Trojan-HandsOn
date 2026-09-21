@@ -8,10 +8,6 @@
 </head>
 <body class="email-page">
 
-  <div class="disclaimer-bar">
-    ⚠ This is a FAKE email client for educational purposes. No real emails. No attachments are real.
-  </div>
-
   <!-- INBOX VIEW -->
   <div class="email-inbox" id="inbox-view">
     <div class="email-client-header">
@@ -49,26 +45,26 @@
   <div class="reveal-overlay" id="reveal" style="display:none">
     <div class="reveal-card">
       <div class="reveal-icon">⚠️</div>
-      <h2>That Email Was a Trojan</h2>
-      <p class="reveal-sub">The attachment was malicious. Here's what happened:</p>
+      <h2>Malicious Email Detected</h2>
+      <p class="reveal-sub">The attachment contained malicious code designed to compromise your system. Here's what occurred:</p>
 
       <div class="reveal-section">
-        <div class="reveal-section-title">What it did</div>
+        <div class="reveal-section-title">Attack Sequence</div>
         <div class="reveal-steps" id="reveal-steps"></div>
       </div>
 
       <div class="reveal-section">
-        <div class="reveal-section-title">Flags you missed</div>
+        <div class="reveal-section-title">Indicators of Compromise</div>
         <div class="reveal-data" id="reveal-flags"></div>
       </div>
 
       <div class="reveal-tip">
-        <strong>How to spot it:</strong> Check the sender's actual email address — hover or long-press.
-        Look for misspellings and urgency ("ASAP", "urgent"). Never open unexpected attachments.
-        When in doubt, contact the person directly through a known channel.
+        <strong>How to spot it:</strong> Verify the sender's actual email address by hovering over the display name.
+        Look for spelling errors and artificial urgency ("ASAP", "urgent"). Never open unexpected attachments.
+        When uncertain, contact the sender directly through a verified communication channel.
       </div>
 
-      <a href="index.html" class="reveal-back">← Back to demos</a>
+        <a href="index.html" class="reveal-back">← Back</a>
     </div>
   </div>
 
@@ -209,26 +205,44 @@
           if (e.malicious) {
             showAttachmentReveal(e);
           } else {
-            alert('This is a safe demo email. No real attachment.');
+            alert('Attachment blocked.');
           }
         });
       }
     }
 
+    function triggerHack(callback, msg) {
+      document.body.classList.add('hack-shake');
+      var overlay = document.createElement('div');
+      overlay.className = 'hack-overlay';
+      document.body.appendChild(overlay);
+      var status = document.createElement('div');
+      status.className = 'hack-status';
+      status.textContent = msg || 'System compromised';
+      document.body.appendChild(status);
+      setTimeout(function() {
+        overlay.remove();
+        status.remove();
+        document.body.classList.remove('hack-shake');
+        callback();
+      }, 2500);
+    }
+
     // ===== ATTACHMENT REVEAL =====
     function showAttachmentReveal(e) {
-      document.getElementById('content-view').style.display = 'none';
-      var reveal = document.getElementById('reveal');
-      reveal.style.display = 'flex';
+      triggerHack(function() {
+        document.getElementById('content-view').style.display = 'none';
+        var reveal = document.getElementById('reveal');
+        reveal.style.display = 'flex';
 
       // What it did — short and sweet
       var stepsHtml = '';
       var whatItDid = [
-        'Ran hidden macros after you clicked "Enable"',
-        'Installed a keylogger to capture keystrokes',
-        'Stole saved browser passwords',
-        'Opened a backdoor to the attacker\'s server',
-        'Document looked normal — you\'d never know'
+        'Executed hidden macros when you clicked "Enable Content"',
+        'Installed a keylogger to capture all keystrokes',
+        'Extracted saved browser passwords and credentials',
+        'Established a backdoor connection to the attacker\'s command server',
+        'Document appeared normal — the compromise was invisible'
       ];
       whatItDid.forEach(function(s, i) {
         stepsHtml += '<div class="reveal-step"><span class="step-num">' + (i + 1) + '</span><span>' + s + '</span></div>';
@@ -241,6 +255,7 @@
         flagsHtml += '<div class="reveal-flag">• ' + f + '</div>';
       });
       document.getElementById('reveal-flags').innerHTML = flagsHtml;
+      }, 'Executing payload — credentials compromised');
     }
 
     // ===== BACK BUTTON =====

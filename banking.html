@@ -8,10 +8,6 @@
 </head>
 <body class="banking-page">
 
-  <div class="disclaimer-bar">
-    ⚠ This is a FAKE banking site for educational purposes. No real bank. Your data stays on this page.
-  </div>
-
   <!-- FAKE BANKING UI -->
   <div class="bank-wrap" id="bank-ui">
     <div class="bank-header">
@@ -51,25 +47,26 @@
   <div class="reveal-overlay" id="reveal" style="display:none">
     <div class="reveal-card">
       <div class="reveal-icon">🔓</div>
-      <h2>Your Info Was Just Stolen</h2>
-      <p class="reveal-sub">This was a Trojan phishing page. Here's what happened:</p>
+      <h2>Credential Harvesting Attack Detected</h2>
+      <p class="reveal-sub">This was a phishing page designed to steal your banking credentials. Here's what occurred:</p>
 
       <div class="reveal-section">
-        <div class="reveal-section-title">What it did</div>
+        <div class="reveal-section-title">Attack Data</div>
         <div class="reveal-data" id="reveal-data"></div>
       </div>
 
       <div class="reveal-section">
-        <div class="reveal-section-title">Flags you missed</div>
+        <div class="reveal-section-title">Missed Indicators</div>
         <div class="reveal-data" id="reveal-flags"></div>
       </div>
 
       <div class="reveal-tip">
-        <strong>How to spot it:</strong> Always check the URL — phishing sites use lookalike domains.
-        Never click login links from emails. Type the URL yourself.
+        <strong>How to spot it:</strong> Always verify the URL — phishing sites use lookalike domains.
+        Never click login links from emails. Type the URL directly into your browser.
+        Check for SSL certificates and verify the domain matches your bank's official website.
       </div>
 
-      <a href="index.html" class="reveal-back">← Back to demos</a>
+        <a href="index.html" class="reveal-back">← Back</a>
     </div>
   </div>
 
@@ -81,6 +78,23 @@
       'Generic "Sign In" page with no personal branding'
     ];
 
+    function triggerHack(callback, msg) {
+      document.body.classList.add('hack-shake');
+      var overlay = document.createElement('div');
+      overlay.className = 'hack-overlay';
+      document.body.appendChild(overlay);
+      var status = document.createElement('div');
+      status.className = 'hack-status';
+      status.textContent = msg || 'System compromised';
+      document.body.appendChild(status);
+      setTimeout(function() {
+        overlay.remove();
+        status.remove();
+        document.body.classList.remove('hack-shake');
+        callback();
+      }, 2500);
+    }
+
     document.getElementById('bank-form').addEventListener('submit', function(e) {
       e.preventDefault();
 
@@ -88,16 +102,17 @@
       var pass = document.getElementById('bank-pass').value || '(empty)';
       var acct = document.getElementById('bank-account').value || '(empty)';
 
-      document.getElementById('bank-ui').style.display = 'none';
-      var reveal = document.getElementById('reveal');
-      reveal.style.display = 'flex';
+      triggerHack(function() {
+        document.getElementById('bank-ui').style.display = 'none';
+        var reveal = document.getElementById('reveal');
+        reveal.style.display = 'flex';
 
       // What it did
       document.getElementById('reveal-data').innerHTML =
         '<div class="data-row"><span class="data-label">Username:</span><span class="data-val">' + esc(user) + '</span></div>' +
         '<div class="data-row"><span class="data-label">Password:</span><span class="data-val">' + esc(pass) + '</span></div>' +
         '<div class="data-row"><span class="data-label">Account #:</span><span class="data-val">' + esc(acct) + '</span></div>' +
-        '<div class="data-row"><span class="data-label">Status:</span><span class="data-val" style="color:var(--red)">Captured locally — a real trojan would exfiltrate this to the attacker\'s server</span></div>';
+        '<div class="data-row"><span class="data-label">Status:</span><span class="data-val" style="color:var(--red)">Captured — attacker has it all</span></div>';
 
       // Flags you missed
       var flagsHtml = '';
@@ -105,6 +120,7 @@
         flagsHtml += '<div class="reveal-flag">• ' + f + '</div>';
       });
       document.getElementById('reveal-flags').innerHTML = flagsHtml;
+      }, 'Credentials captured — account compromised');
     });
 
     function esc(s) {

@@ -8,10 +8,6 @@
 </head>
 <body class="download-page">
 
-  <div class="disclaimer-bar">
-    ⚠ This is a FAKE download site for educational purposes. The "software" is not real. Nothing is installed.
-  </div>
-
   <!-- FAKE DOWNLOAD SITE -->
   <div class="dl-wrap" id="dl-ui">
     <div class="dl-header">
@@ -87,30 +83,47 @@
   <div class="reveal-overlay" id="reveal" style="display:none">
     <div class="reveal-card">
       <div class="reveal-icon">⚠️</div>
-      <h2>This Was a Trojan</h2>
-      <p class="reveal-sub">The "download" was never real software. Here's what happened:</p>
+      <h2>Malicious Software Distribution Detected</h2>
+      <p class="reveal-sub">The download contained trojanized software designed to compromise your system. Here's what occurred:</p>
 
       <div class="reveal-section">
-        <div class="reveal-section-title">What it did</div>
+        <div class="reveal-section-title">Attack Sequence</div>
         <div class="reveal-steps" id="reveal-steps"></div>
       </div>
 
       <div class="reveal-section">
-        <div class="reveal-section-title">Flags you missed</div>
+        <div class="reveal-section-title">Missed Indicators</div>
         <div class="reveal-data" id="reveal-flags"></div>
       </div>
 
       <div class="reveal-tip">
         <strong>How to spot it:</strong> Be skeptical of "free" versions of paid software.
-        Check if the domain is the official site. Search the software name + "scam" before
-        downloading. Use official sources only.
+        Verify the domain is the official site. Search the software name + "scam" before
+        downloading. Use official sources and verified download channels only.
       </div>
 
-      <a href="index.html" class="reveal-back">← Back to demos</a>
+        <a href="index.html" class="reveal-back">← Back</a>
     </div>
   </div>
 
   <script>
+    function triggerHack(callback, msg) {
+      document.body.classList.add('hack-shake');
+      var overlay = document.createElement('div');
+      overlay.className = 'hack-overlay';
+      document.body.appendChild(overlay);
+      var status = document.createElement('div');
+      status.className = 'hack-status';
+      status.textContent = msg || 'System compromised';
+      document.body.appendChild(status);
+      setTimeout(function() {
+        overlay.remove();
+        status.remove();
+        document.body.classList.remove('hack-shake');
+        callback();
+      }, 2500);
+    }
+
     var logLines = [];
     var installEl = document.getElementById('install-log');
     var fillEl = document.getElementById('install-fill');
@@ -147,7 +160,7 @@
         { pct: 75, status: 'Installing...', log: '▶ Password stealer installed', cls: 'danger' },
         { pct: 85, status: 'Installing...', log: '▶ Backdoor opened on port 4444', cls: 'danger' },
         { pct: 95, status: 'Finalizing...', log: '▶ All payloads active', cls: 'warn' },
-        { pct: 100, status: 'Done!', log: '✓ Install complete! (It wasn\'t.)', cls: '' }
+        { pct: 100, status: 'Done!', log: '✓ Install complete!', cls: '' }
       ];
 
       steps.forEach(function(s, i) {
@@ -157,7 +170,7 @@
           addLog(s.log, s.cls);
 
           if (i === steps.length - 1) {
-            setTimeout(showReveal, 800);
+            triggerHack(showReveal, 'Backdoor established — system compromised');
           }
         }, i * 550);
       });
@@ -171,10 +184,10 @@
       // What it did
       var stepsHtml = '';
       var whatItDid = [
-        'Fake reviews and download counts built false trust',
-        'The "installer" ran hidden malicious scripts',
-        'Installed a keylogger, credential stealer, and backdoor',
-        'Your data would be sent to the attacker\'s server'
+        'Fabricated reviews and download statistics established false credibility',
+        'The "installer" executed hidden malicious scripts',
+        'Deployed a keylogger, credential stealer, and persistent backdoor',
+        'Exfiltrated your data to the attacker\'s command and control server'
       ];
       whatItDid.forEach(function(s, i) {
         stepsHtml += '<div class="reveal-step"><span class="step-num">' + (i + 1) + '</span><span>' + s + '</span></div>';
